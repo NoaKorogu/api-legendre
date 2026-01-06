@@ -1,89 +1,133 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>API Users</title>
-  <style>
-    body { font-family: Arial; margin: 30px; }
-    button { margin: 5px; }
-    input { margin: 5px; }
-    .user { margin: 5px 0; }
-  </style>
+<meta charset="UTF-8">
+<title>API Users</title>
+<style>
+body { font-family: Arial; margin: 30px; }
+button { margin: 5px; }
+input { margin: 5px; }
+.user { margin: 5px 0; }
+</style>
 </head>
 <body>
 
-  <h1>API Users</h1>
+<h1>API Users avec Auth</h1>
 
-  <!-- GET ALL USERS -->
-  <button onclick="getUsers()">Get users</button>
+<!-- LOGIN -->
+<h3>Login</h3>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<pre id="loginResult"></pre>
 
-  <hr>
+<hr>
 
-  <!-- FIND USER -->
-  <h3>Find user by ID</h3>
-  <input type="number" id="userId" placeholder="User ID">
-  <button onclick="findUser()">Find</button>
-  <pre id="foundUser"></pre>
+<!-- GET ALL USERS -->
+<button onclick="getUsers()">Get users</button>
 
-  <hr>
+<!-- FIND USER -->
+<h3>Find user by ID</h3>
+<input type="number" id="userId" placeholder="User ID">
+<button onclick="findUser()">Find</button>
+<pre id="foundUser"></pre>
 
-  <!-- USERS LIST -->
-  <h3>Users list</h3>
-  <div id="users"></div>
+<hr>
 
-  <script>
-    const API_URL = '/api/v1/users';
+<!-- USERS LIST -->
+<h3>Users list</h3>
+<div id="users"></div>
 
-    async function getUsers() {
-      const res = await fetch(API_URL);
-      const users = await res.json();
+<script>
+let TOKEN = null;
 
-      const container = document.getElementById('users');
-      container.innerHTML = '';
+const API_URL = '/api/v1/users';
 
-      users.forEach(user => {
-        const div = document.createElement('div');
-        div.className = 'user';
-        div.innerHTML = `
-          ID: ${user.id} - Name: ${user.name ?? '(no name)'}
-          <button onclick="deleteUser(${user.id})">Delete</button>
-          <button onclick="editUser(${user.id})">Edit</button>
-        `;
-        container.appendChild(div);
-      });
-    }
+async function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
 
-    async function findUser() {
-      const id = document.getElementById('userId').value;
-      if (!id) return;
+  const res = await fetch('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  });
 
-      const res = await fetch(`${API_URL}/${id}`);
-      const data = await res.json();
+  const data = await res.json();
+  if(res.ok){
+    TOKEN = data.token;
+    document.getElementById('loginResult').textContent = `Connecté en tant que ${data.username} (${data.role})`;
+  } else {
+    document.getElementById('loginResult').textContent = data.message;
+  }
+}
 
-      document.getElementById('foundUser').textContent =
-        res.ok ? JSON.stringify(data, null, 2) : data.message;
-    }
+async function getUsers() {
+  if(!TOKEN) return alert('Vous devez vous connecter');
 
-    async function deleteUser(id) {
-      if (!confirm('Supprimer cet utilisateur ?')) return;
+  const res = await fetch(API_URL, {
+    headers: { 'Authorization': `Bearer ${TOKEN}` }
+  });
+  const users = await res.json();
 
-      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-      getUsers();
-    }
+  const container = document.getElementById('users');
+  container.innerHTML = '';
 
-    async function editUser(id) {
-      const newName = prompt('Nouveau nom ?');
-      if (!newName) return;
+  users.forEach(user => {
+    const div = document.createElement('div');
+    div.className = 'user';
+    div.innerHTML = `
+      ID: ${user.id} - Name: ${user.name ?? '(no name)'}
+      <button onclick="deleteUser(${user.id})">Delete</button>
+      <button onclick="editUser(${user.id})">Edit</button>
+    `;
+    container.appendChild(div);
+  });
+}
 
-      await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName })
-      });
+async function findUser() {
+  if(!TOKEN) return alert('Vous devez vous connecter');
 
-      getUsers();
-    }
-  </script>
+  const id = document.getElementById('userId').value;
+  if (!id) return;
+
+  const res = await fetch(`${API_URL}/${id}`, {
+    headers: { 'Authorization': `Bearer ${TOKEN}` }
+  });
+  const data = await res.json();
+
+  document.getElementById('foundUser').textContent =
+    res.ok ? JSON.stringify(data, null, 2) : data.message;
+}
+
+async function deleteUser(id) {
+  if(!TOKEN) return alert('Vous devez vous connecter');
+  if(!confirm('Supprimer cet utilisateur ?')) return;
+
+  await fetch(`${API_URL}/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${TOKEN}` }
+  });
+  getUsers();
+}
+
+async function editUser(id) {
+  if(!TOKEN) return alert('Vous devez vous connecter');
+
+  const newName = prompt('Nouveau nom ?');
+  if(!newName) return;
+
+  await fetch(`${API_URL}/${id}`, {
+    method: 'PUT',
+    headers: { 
+      'Authorization': `Bearer ${TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name: newName })
+  });
+  getUsers();
+}
+</script>
 
 </body>
 </html>
