@@ -5,17 +5,6 @@ L’API est versionnée via /api/v1 et consommée par une page HTML simple.
 
 ---
 
-## Objectifs pédagogiques
-
-- Comprendre l’architecture MVC côté backend
-- Créer une API REST avec Express
-- Implémenter un CRUD complet
-- Tester une API via navigateur, curl et frontend
-- Versionner une API (/api/v1)
-- Utiliser Git et GitHub
-
----
-
 ## Architecture du projet
 
 api-mvc/
@@ -66,12 +55,12 @@ Fonctionnalités :
 Base URL :
 /api/v1/users
 
-Méthode   Route                    Description
-GET       /api/v1/users            Récupérer tous les users
-GET       /api/v1/users/:id        Récupérer un user par ID
-POST      /api/v1/users            Créer un user
-PUT       /api/v1/users/:id        Modifier un user
-DELETE    /api/v1/users/:id        Supprimer un user
+- Méthode   Route                    Description
+- GET       /api/v1/users            Récupérer tous les users
+- GET       /api/v1/users/:id        Récupérer un user par ID
+- POST      /api/v1/users            Créer un user
+- PUT       /api/v1/users/:id        Modifier un user
+- DELETE    /api/v1/users/:id        Supprimer un user
 
 ---
 
@@ -98,9 +87,3 @@ DELETE    /api/v1/users/:id        Supprimer un user
 - Les données sont stockées en mémoire (pas de base de données)
 - Le projet respecte une séparation claire des responsabilités
 - Le versioning permet d’ajouter facilement une future /api/v2
-
----
-
-## Auteur
-
-Projet réalisé dans le cadre d’un cours sur les API REST et l’architecture MVC.
