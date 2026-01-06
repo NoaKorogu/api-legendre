@@ -9,15 +9,15 @@ L’API est versionnée via /api/v1 et consommée par une page HTML simple.
 
 api-mvc/
 
-controllers/        -> Logique des requêtes HTTP  
-models/             -> Gestion des données (en mémoire)  
-routes/             -> Définition des routes API  
-public/             -> Frontend (index.html)  
+- controllers/        -> Logique des requêtes HTTP  
+- models/             -> Gestion des données (en mémoire)  
+- routes/             -> Définition des routes API  
+- public/             -> Frontend (index.html)  
 
-app.js              -> Configuration Express  
-server.js           -> Lancement du serveur  
-package.json  
-README.md  
+- app.js              -> Configuration Express  
+- server.js           -> Lancement du serveur  
+- package.json  
+- README.md  
 
 ---
 
