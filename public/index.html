@@ -23,8 +23,13 @@ input { margin: 5px; }
 
 <hr>
 
-<!-- GET ALL USERS -->
-<button onclick="getUsers()">Get users</button>
+<!-- CREATE USER -->
+<h3>Create user</h3>
+<input type="text" id="newUserName" placeholder="User name">
+<button onclick="createUser()">Create</button>
+<pre id="createResult"></pre>
+
+<hr>
 
 <!-- FIND USER -->
 <h3>Find user by ID</h3>
@@ -33,6 +38,9 @@ input { margin: 5px; }
 <pre id="foundUser"></pre>
 
 <hr>
+
+<!-- GET ALL USERS -->
+<button onclick="getUsers()">Get users</button>
 
 <!-- USERS LIST -->
 <h3>Users list</h3>
@@ -98,6 +106,31 @@ async function findUser() {
 
   document.getElementById('foundUser').textContent =
     res.ok ? JSON.stringify(data, null, 2) : data.message;
+}
+
+async function createUser() {
+  if(!TOKEN) return alert('Vous devez vous connecter');
+
+  const name = document.getElementById('newUserName').value;
+  if (!name) return alert('Entrez un nom');
+
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 
+      'Authorization': `Bearer ${TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name })
+  });
+
+  const data = await res.json();
+  document.getElementById('createResult').textContent = 
+    res.ok ? `Utilisateur créé:\n${JSON.stringify(data, null, 2)}` : data.message;
+  
+  if(res.ok) {
+    document.getElementById('newUserName').value = '';
+    getUsers();
+  }
 }
 
 async function deleteUser(id) {

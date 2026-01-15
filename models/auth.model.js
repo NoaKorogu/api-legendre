@@ -1,21 +1,12 @@
 const bcrypt = require('bcryptjs');
+const pool = require('../config/db');
 
-// Users statiques
-let users = [
-  {
-    id: 1,
-    username: 'admin',
-    password: bcrypt.hashSync('admin123', 8),
-    role: 'admin'
-  },
-  {
-    id: 2,
-    username: 'user',
-    password: bcrypt.hashSync('user123', 8),
-    role: 'user'
+exports.findByUsername = async (username) => {
+  const connection = await pool.getConnection();
+  try {
+    const [rows] = await connection.query('SELECT * FROM auth_users WHERE username = ?', [username]);
+    return rows.length > 0 ? rows[0] : null;
+  } finally {
+    connection.release();
   }
-];
-
-exports.findByUsername = (username) => {
-  return users.find(u => u.username === username);
 };
