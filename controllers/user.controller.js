@@ -48,7 +48,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    const updatedUser = await User.updateById(req.params.id, req.body.name);
+    const updatedUser = await User.updateById(req.params.id, req.body);
 
     if (!updatedUser) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });

@@ -25,12 +25,12 @@ const loginLimiter = rateLimit({
  *           schema:
  *             type: object
  *             required:
- *               - username
+ *               - email
  *               - password
  *             properties:
- *               username:
+ *               email:
  *                 type: string
- *                 example: user
+ *                 example: user@example.com
  *               password:
  *                 type: string
  *                 example: user123

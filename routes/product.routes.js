@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const ProductController = require('../controllers/product.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
+const authorize = require('../middlewares/authorize.middleware');
 const logger = require('../middlewares/logger.middleware');
 
 /**
@@ -30,25 +31,26 @@ const logger = require('../middlewares/logger.middleware');
  *         application/json:
  *           schema:
  *             type: object
+
+ *             properties:
+ *                            description:
+ *                              type: string
+ *                              example: "Long text description"
+ *                            nom:
+ *                              type: string
+ *                              example: "example value"
+ *                            prix:
+ *                              type: number
+ *                              example: 99.99
  *             required:
  *               - nom
  *               - prix
- *             properties:
- *               nom:
- *                 type: string
- *                 example: Laptop
- *               prix:
- *                 type: number
- *                 example: 999.99
- *               description:
- *                 type: string
- *                 example: High-end gaming laptop
  *     responses:
  *       201:
  *         description: Product créé
  */
 router.get('/', authMiddleware, logger, ProductController.getAll);
-router.post('/', authMiddleware, logger, ProductController.create);
+router.post('/', authMiddleware, authorize('admin'), logger, ProductController.create);
 
 /**
  * @swagger
@@ -88,16 +90,20 @@ router.post('/', authMiddleware, logger, ProductController.create);
  *         application/json:
  *           schema:
  *             type: object
+
  *             properties:
- *               nom:
- *                 type: string
- *                 example: Laptop
- *               prix:
- *                 type: number
- *                 example: 999.99
- *               description:
- *                 type: string
- *                 example: High-end gaming laptop
+ *                            description:
+ *                              type: string
+ *                              example: "Long text description"
+ *                            nom:
+ *                              type: string
+ *                              example: "example value"
+ *                            prix:
+ *                              type: number
+ *                              example: 99.99
+ *             required:
+ *               - nom
+ *               - prix
  *     responses:
  *       200:
  *         description: Product modifié
@@ -118,7 +124,7 @@ router.post('/', authMiddleware, logger, ProductController.create);
  *         description: Product supprimé
  */
 router.get('/:id', authMiddleware, logger, ProductController.getById);
-router.put('/:id', authMiddleware, logger, ProductController.update);
-router.delete('/:id', authMiddleware, logger, ProductController.delete);
+router.put('/:id', authMiddleware, authorize('admin'), logger, ProductController.update);
+router.delete('/:id', authMiddleware, authorize('admin'), logger, ProductController.delete);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
+const authorize = require('../middlewares/authorize.middleware');
 const logger = require('../middlewares/logger.middleware');
 
 /**
@@ -47,18 +48,29 @@ const logger = require('../middlewares/logger.middleware');
  *             type: object
  *             required:
  *               - name
+ *               - email
+ *               - password
  *             properties:
  *               name:
  *                 type: string
  *                 example: Charlie
+ *               email:
+ *                 type: string
+ *                 example: charlie@example.com
+ *               password:
+ *                 type: string
+ *                 example: strongpassword
+ *               role:
+ *                 type: string
+ *                 example: user
  *     responses:
  *       201:
  *         description: Utilisateur créé
  *       401:
  *         description: Non authentifié
  */
-router.get('/', authMiddleware, logger, userController.getAllUsers);
-router.post('/', authMiddleware, logger, userController.createUser);
+router.get('/', authMiddleware, authorize('admin'), logger, userController.getAllUsers);
+router.post('/', authMiddleware, authorize('admin'), logger, userController.createUser);
 
 /**
  * @swagger
@@ -127,8 +139,8 @@ router.post('/', authMiddleware, logger, userController.createUser);
  *       404:
  *         description: Utilisateur non trouvé
  */
-router.get('/:id', authMiddleware, logger, userController.getUserById);
-router.put('/:id', authMiddleware, logger, userController.updateUser);
-router.delete('/:id', authMiddleware, logger, userController.deleteUser);
+router.get('/:id', authMiddleware, authorize('admin'), logger, userController.getUserById);
+router.put('/:id', authMiddleware, authorize('admin'), logger, userController.updateUser);
+router.delete('/:id', authMiddleware, authorize('admin'), logger, userController.deleteUser);
 
 module.exports = router;

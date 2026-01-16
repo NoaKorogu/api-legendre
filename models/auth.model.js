@@ -1,10 +1,9 @@
-const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
 
-exports.findByUsername = async (username) => {
+exports.findByEmail = async (email) => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query('SELECT * FROM auth_users WHERE username = ?', [username]);
+    const [rows] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
     return rows.length > 0 ? rows[0] : null;
   } finally {
     connection.release();
