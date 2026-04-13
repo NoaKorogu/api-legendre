@@ -117,10 +117,35 @@ router.post('/', authMiddleware, logger, TourneeController.create);
  *       200:
  *         description: Tournee supprimé
  */
-router.get('/:id', authMiddleware, logger, TourneeController.getById);
-router.put('/:id', authMiddleware, logger, TourneeController.update);
-router.delete('/:id', authMiddleware, logger, TourneeController.delete);
+router.get('/:id', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, TourneeController.getById);
+router.put('/:id', authMiddleware, roleMiddleware('admin'), logger, TourneeController.update);
+router.delete('/:id', authMiddleware, roleMiddleware('admin'), logger, TourneeController.delete);
 
 router.get('/:id/livraisons', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, TourneeController.getLivraisons);
+
+/**
+ * @swagger
+ * /api/v1/tournees/{id}/livraisons:
+ *   get:
+ *     summary: Récupérer les livraisons d'une tournée
+ *     tags:
+ *       - Tournees
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la tournée
+ *     responses:
+ *       200:
+ *         description: Liste des livraisons de la tournée
+ *       401:
+ *         description: Non authentifié
+ *       403:
+ *         description: Accès refusé
+ */
 
 module.exports = router;

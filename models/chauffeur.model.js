@@ -1,19 +1,23 @@
 const pool = require('../config/db');
 
-exports.findAll = async (userId = null) => {
+exports.findAll = async () => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query('SELECT * FROM chauffeurs');
+    const [rows] = await connection.query(
+      'SELECT id, nom, prenom, email, telephone, role, created_at FROM chauffeurs WHERE role = "chauffeur"'
+    );
     return rows;
   } finally {
     connection.release();
   }
 };
 
-exports.findById = async (id, userId = null) => {
+exports.findById = async (id) => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query('SELECT * FROM chauffeurs WHERE id = ?', [id]);
+    const [rows] = await connection.query(
+      'SELECT id, nom, prenom, email, telephone, role, created_at FROM chauffeurs WHERE id = ?', [id]
+    );
     return rows.length > 0 ? rows[0] : null;
   } finally {
     connection.release();

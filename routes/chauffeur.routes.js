@@ -3,6 +3,7 @@ const router = express.Router();
 const ChauffeurController = require('../controllers/chauffeur.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const logger = require('../middlewares/logger.middleware');
+const roleMiddleware = require('../middlewares/role.middleware');
 
 /**
  * @swagger
@@ -59,9 +60,8 @@ const logger = require('../middlewares/logger.middleware');
  *       201:
  *         description: Chauffeur créé
  */
-router.get('/', authMiddleware, logger, ChauffeurController.getAll);
-router.post('/', authMiddleware, logger, ChauffeurController.create);
-
+router.get('/', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, ChauffeurController.getAll);
+router.post('/', authMiddleware, roleMiddleware('admin'), logger, ChauffeurController.create);
 /**
  * @swagger
  * /api/v1/chauffeurs/{id}:
@@ -144,10 +144,35 @@ router.post('/', authMiddleware, logger, ChauffeurController.create);
  *       200:
  *         description: Chauffeur supprimé
  */
-router.get('/:id', authMiddleware, logger, ChauffeurController.getById);
-router.put('/:id', authMiddleware, logger, ChauffeurController.update);
-router.delete('/:id', authMiddleware, logger, ChauffeurController.delete);
+router.get('/:id', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, ChauffeurController.getById);
+router.put('/:id', authMiddleware, roleMiddleware('admin'), logger, ChauffeurController.update);
+router.delete('/:id', authMiddleware, roleMiddleware('admin'), logger, ChauffeurController.delete);
 
-router.get('/:id/tournees', authMiddleware, logger, ChauffeurController.getTournees);
+router.get('/:id/tournees', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, ChauffeurController.getTournees);
+
+/**
+ * @swagger
+ * /api/v1/chauffeurs/{id}/tournees:
+ *   get:
+ *     summary: Récupérer les tournées d'un chauffeur
+ *     tags:
+ *       - Chauffeurs
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du chauffeur
+ *     responses:
+ *       200:
+ *         description: Liste des tournées du chauffeur
+ *       401:
+ *         description: Non authentifié
+ *       403:
+ *         description: Accès refusé
+ */
 
 module.exports = router;

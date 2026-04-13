@@ -137,9 +137,9 @@ router.post('/', authMiddleware, logger, LivraisonController.create);
  *       200:
  *         description: Livraison supprimé
  */
-router.get('/:id', authMiddleware, logger, LivraisonController.getById);
-router.put('/:id', authMiddleware, logger, LivraisonController.update);
-router.delete('/:id', authMiddleware, logger, LivraisonController.delete);
+router.get('/:id', authMiddleware, roleMiddleware('chauffeur', 'admin', 'client'), logger, LivraisonController.getById);
+router.put('/:id', authMiddleware, roleMiddleware('admin'), logger, LivraisonController.update);
+router.delete('/:id', authMiddleware, roleMiddleware('admin'), logger, LivraisonController.delete);
 
 router.patch('/:id/statut', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, LivraisonController.updateStatut);
 

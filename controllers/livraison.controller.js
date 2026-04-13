@@ -2,7 +2,7 @@ const Livraison = require('../models/livraison.model');
 
 exports.getAll = async (req, res) => {
   try {
-    const items = await Livraison.findAll();
+    const items = await Livraison.findAll(req.user?.id, req.user?.role);
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });

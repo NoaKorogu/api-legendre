@@ -1,9 +1,14 @@
 const pool = require('../config/db');
 
-exports.findAll = async (userId = null) => {
+exports.findAll = async (userId = null, userRole = null) => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query('SELECT * FROM livraisons');
+    let rows;
+    if (userRole === 'client') {
+      [rows] = await connection.query('SELECT * FROM livraisons WHERE client_id = ?', [userId]);
+    } else {
+      [rows] = await connection.query('SELECT * FROM livraisons');
+    }
     return rows;
   } finally {
     connection.release();
