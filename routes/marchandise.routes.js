@@ -1,28 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const ProductController = require('../controllers/product.controller');
+const MarchandiseController = require('../controllers/marchandise.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
-const authorize = require('../middlewares/authorize.middleware');
 const logger = require('../middlewares/logger.middleware');
 
 /**
  * @swagger
- * /api/v1/products:
+ * /api/v1/marchandises:
  *   get:
- *     summary: Récupérer tous les products
+ *     summary: Récupérer tous les marchandises
  *     tags:
- *       - Products
+ *       - Marchandises
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Liste des products
+ *         description: Liste des marchandises
  *       401:
  *         description: Non authentifié
  *   post:
- *     summary: Créer un nouveau product
+ *     summary: Créer un nouveau marchandise
  *     tags:
- *       - Products
+ *       - Marchandises
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -33,32 +32,33 @@ const logger = require('../middlewares/logger.middleware');
  *             type: object
 
  *             properties:
- *                            description:
- *                              type: string
- *                              example: "Long text description"
  *                            nom:
  *                              type: string
  *                              example: "example value"
- *                            prix:
+ *                            poids:
+ *                              type: number
+ *                              example: 99.99
+ *                            volume:
  *                              type: number
  *                              example: 99.99
  *             required:
  *               - nom
- *               - prix
+ *               - poids
+ *               - volume
  *     responses:
  *       201:
- *         description: Product créé
+ *         description: Marchandise créé
  */
-router.get('/', authMiddleware, logger, ProductController.getAll);
-router.post('/', authMiddleware, authorize('admin'), logger, ProductController.create);
+router.get('/', authMiddleware, logger, MarchandiseController.getAll);
+router.post('/', authMiddleware, logger, MarchandiseController.create);
 
 /**
  * @swagger
- * /api/v1/products/{id}:
+ * /api/v1/marchandises/{id}:
  *   get:
- *     summary: Récupérer un product par ID
+ *     summary: Récupérer un marchandise par ID
  *     tags:
- *       - Products
+ *       - Marchandises
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -69,13 +69,13 @@ router.post('/', authMiddleware, authorize('admin'), logger, ProductController.c
  *           type: integer
  *     responses:
  *       200:
- *         description: Product trouvé
+ *         description: Marchandise trouvé
  *       404:
  *         description: Non trouvé
  *   put:
- *     summary: Modifier un product
+ *     summary: Modifier un marchandise
  *     tags:
- *       - Products
+ *       - Marchandises
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -92,25 +92,26 @@ router.post('/', authMiddleware, authorize('admin'), logger, ProductController.c
  *             type: object
 
  *             properties:
- *                            description:
- *                              type: string
- *                              example: "Long text description"
  *                            nom:
  *                              type: string
  *                              example: "example value"
- *                            prix:
+ *                            poids:
+ *                              type: number
+ *                              example: 99.99
+ *                            volume:
  *                              type: number
  *                              example: 99.99
  *             required:
  *               - nom
- *               - prix
+ *               - poids
+ *               - volume
  *     responses:
  *       200:
- *         description: Product modifié
+ *         description: Marchandise modifié
  *   delete:
- *     summary: Supprimer un product
+ *     summary: Supprimer un marchandise
  *     tags:
- *       - Products
+ *       - Marchandises
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -121,10 +122,10 @@ router.post('/', authMiddleware, authorize('admin'), logger, ProductController.c
  *           type: integer
  *     responses:
  *       200:
- *         description: Product supprimé
+ *         description: Marchandise supprimé
  */
-router.get('/:id', authMiddleware, logger, ProductController.getById);
-router.put('/:id', authMiddleware, authorize('admin'), logger, ProductController.update);
-router.delete('/:id', authMiddleware, authorize('admin'), logger, ProductController.delete);
+router.get('/:id', authMiddleware, logger, MarchandiseController.getById);
+router.put('/:id', authMiddleware, logger, MarchandiseController.update);
+router.delete('/:id', authMiddleware, logger, MarchandiseController.delete);
 
 module.exports = router;

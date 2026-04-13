@@ -1,8 +1,8 @@
-const Product = require('../models/product.model');
+const Adresse = require('../models/adresse.model');
 
 exports.getAll = async (req, res) => {
   try {
-    const items = await Product.findAll();
+    const items = await Adresse.findAll();
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
@@ -11,9 +11,9 @@ exports.getAll = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
-    const item = await Product.findById(req.params.id);
+    const item = await Adresse.findById(req.params.id);
     if (!item) {
-      return res.status(404).json({ message: 'product non trouvé' });
+      return res.status(404).json({ message: 'adresse non trouvé' });
     }
     res.json(item);
   } catch (err) {
@@ -23,7 +23,7 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const newItem = await Product.create(req.body);
+    const newItem = await Adresse.create(req.body);
     res.status(201).json(newItem);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
@@ -32,9 +32,9 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const updated = await Product.update(req.params.id, req.body);
+    const updated = await Adresse.update(req.params.id, req.body);
     if (!updated) {
-      return res.status(404).json({ message: 'product non trouvé' });
+      return res.status(404).json({ message: 'adresse non trouvé' });
     }
     res.json(updated);
   } catch (err) {
@@ -44,11 +44,11 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const deleted = await Product.delete(req.params.id);
+    const deleted = await Adresse.delete(req.params.id);
     if (!deleted) {
-      return res.status(404).json({ message: 'product non trouvé' });
+      return res.status(404).json({ message: 'adresse non trouvé' });
     }
-    res.json({ message: 'product supprimé', item: deleted });
+    res.json({ message: 'adresse supprimé', item: deleted });
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }

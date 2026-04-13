@@ -23,3 +23,24 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };
+
+exports.register = async (req, res) => {
+  try {
+    const { nom, prenom, email, telephone, password, role } = req.body;
+
+    if (!nom || !email || !password || !role) {
+      return res.status(400).json({ message: 'nom, email, password et role requis' });
+    }
+    if (!['chauffeur', 'client'].includes(role)) {
+      return res.status(400).json({ message: 'role doit être chauffeur ou client' });
+    }
+
+    const existing = await Auth.findByEmail(email);
+    if (existing) return res.status(409).json({ message: 'Email déjà utilisé' });
+
+    const user = await Auth.register(req.body);
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};

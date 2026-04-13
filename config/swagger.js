@@ -4,9 +4,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API Users with Auth',
+      title: 'API Logistique LEGENDRE',
       version: '1.0.0',
-      description: 'API simple pour gérer les utilisateurs avec authentification JWT'
+      description: 'API de gestion des tournées et livraisons'
     },
     servers: [
       {

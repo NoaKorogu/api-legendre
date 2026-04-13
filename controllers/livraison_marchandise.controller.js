@@ -1,8 +1,8 @@
-const Sell = require('../models/sell.model');
+const Livraison_marchandise = require('../models/livraison_marchandise.model');
 
 exports.getAll = async (req, res) => {
   try {
-    const items = await Sell.findAll(req.user?.id);
+    const items = await Livraison_marchandise.findAll();
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
@@ -11,9 +11,9 @@ exports.getAll = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
-    const item = await Sell.findById(req.params.id, req.user?.id);
+    const item = await Livraison_marchandise.findById(req.params.id);
     if (!item) {
-      return res.status(404).json({ message: 'sell non trouvé' });
+      return res.status(404).json({ message: 'livraison_marchandise non trouvé' });
     }
     res.json(item);
   } catch (err) {
@@ -23,7 +23,7 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const newItem = await Sell.create(req.body, req.user?.id);
+    const newItem = await Livraison_marchandise.create(req.body);
     res.status(201).json(newItem);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
@@ -32,9 +32,9 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const updated = await Sell.update(req.params.id, req.body, req.user?.id);
+    const updated = await Livraison_marchandise.update(req.params.id, req.body);
     if (!updated) {
-      return res.status(404).json({ message: 'sell non trouvé' });
+      return res.status(404).json({ message: 'livraison_marchandise non trouvé' });
     }
     res.json(updated);
   } catch (err) {
@@ -44,11 +44,11 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const deleted = await Sell.delete(req.params.id, req.user?.id);
+    const deleted = await Livraison_marchandise.delete(req.params.id);
     if (!deleted) {
-      return res.status(404).json({ message: 'sell non trouvé' });
+      return res.status(404).json({ message: 'livraison_marchandise non trouvé' });
     }
-    res.json({ message: 'sell supprimé', item: deleted });
+    res.json({ message: 'livraison_marchandise supprimé', item: deleted });
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }

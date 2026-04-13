@@ -1,34 +1,37 @@
 const pool = require('../config/db');
 
-exports.findAll = async () => {
+exports.findAll = async (userId = null) => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query('SELECT * FROM products');
+    const [rows] = await connection.query('SELECT * FROM clients');
     return rows;
   } finally {
     connection.release();
   }
 };
 
-exports.findById = async (id) => {
+exports.findById = async (id, userId = null) => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query('SELECT * FROM products WHERE id = ?', [id]);
+    const [rows] = await connection.query('SELECT * FROM clients WHERE id = ?', [id]);
     return rows.length > 0 ? rows[0] : null;
   } finally {
     connection.release();
   }
 };
 
-exports.create = async (data) => {
+exports.create = async (data, userId = null) => {
   const connection = await pool.getConnection();
   try {
+
+    
+
     const fields = Object.keys(data).join(', ');
     const placeholders = Object.keys(data).map(() => '?').join(', ');
     const values = Object.values(data);
     
     const [result] = await connection.query(
-      `INSERT INTO products (${fields}) VALUES (${placeholders})`,
+      `INSERT INTO clients (${fields}) VALUES (${placeholders})`,
       values
     );
     
@@ -38,17 +41,18 @@ exports.create = async (data) => {
   }
 };
 
-exports.update = async (id, data) => {
+exports.update = async (id, data, userId = null) => {
   const connection = await pool.getConnection();
   try {
-    const existing = await this.findById(id);
+    const existing = await this.findById(id, userId);
     if (!existing) return null;
+
 
     const fields = Object.keys(data).map(k => `${k} = ?`).join(', ');
     const values = [...Object.values(data), id];
 
     await connection.query(
-      `UPDATE products SET ${fields} WHERE id = ?`,
+      `UPDATE clients SET ${fields} WHERE id = ?`,
       values
     );
 
@@ -58,13 +62,13 @@ exports.update = async (id, data) => {
   }
 };
 
-exports.delete = async (id) => {
+exports.delete = async (id, userId = null) => {
   const connection = await pool.getConnection();
   try {
-    const existing = await this.findById(id);
+    const existing = await this.findById(id, userId);
     if (!existing) return null;
 
-    await connection.query('DELETE FROM products WHERE id = ?', [id]);
+    await connection.query('DELETE FROM clients WHERE id = ?', [id]);
     return existing;
   } finally {
     connection.release();

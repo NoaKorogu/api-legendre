@@ -1,89 +1,136 @@
-# API Users – Node.js Express MVC
+# API Logistique LEGENDRE
 
-Mini projet d’API REST développé en Node.js avec Express, en respectant l’architecture MVC (Model – View – Controller).
-L’API est versionnée via /api/v1 et consommée par une page HTML simple.
+API REST sécurisée de gestion des tournées et livraisons pour l'entreprise de transport LEGENDRE.
 
----
+## Technologies
 
-## Architecture du projet
-
-api-mvc/
-
-- controllers/        -> Logique des requêtes HTTP  
-- models/             -> Gestion des données (en mémoire)  
-- routes/             -> Définition des routes API  
-- public/             -> Frontend (index.html)  
-
-- app.js              -> Configuration Express  
-- server.js           -> Lancement du serveur  
-- package.json  
-- README.md  
-
----
+- Node.js + Express
+- MySQL + mysql2
+- JWT (jsonwebtoken) + bcryptjs
+- Swagger / OpenAPI 3.0
+- Jest + Supertest
 
 ## Installation
 
+```bash
+git clone https://github.com/NoaKorogu/api-mvc
+cd api-mvc
 npm install
+```
 
----
+Crée un fichier `.env` à la racine :
 
-## Lancer le projet
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=ton_mdp
+DB_NAME=api_legendre
+SECRET_KEY=une_cle_secrete_longue
+```
 
+Importe le script SQL dans MySQL Workbench, puis lance :
+
+```bash
 npm run dev
+```
 
-Serveur accessible sur :
-http://localhost:3000
+## Documentation Swagger
 
----
+```
+http://localhost:3000/api-docs
+```
 
-## Frontend
+## Endpoints
 
-Une page HTML simple permet d’interagir avec l’API :
+### Authentification
+| Méthode | Route | Description |
+|--------|-------|-------------|
+| POST | /api/v1/auth/register | Créer un compte chauffeur ou client |
+| POST | /api/v1/auth/login | Se connecter, retourne un JWT |
 
-http://localhost:3000
+### Chauffeurs
+| Méthode | Route | Description |
+|--------|-------|-------------|
+| GET | /api/v1/chauffeurs | Liste tous les chauffeurs |
+| GET | /api/v1/chauffeurs/:id | Détail d'un chauffeur |
+| GET | /api/v1/chauffeurs/:id/tournees | Tournées d'un chauffeur |
+| POST | /api/v1/chauffeurs | Créer un chauffeur |
+| PUT | /api/v1/chauffeurs/:id | Modifier un chauffeur |
+| DELETE | /api/v1/chauffeurs/:id | Supprimer un chauffeur |
 
-Fonctionnalités :
-- Récupérer tous les utilisateurs
-- Rechercher un utilisateur par ID
-- Modifier un utilisateur
-- Supprimer un utilisateur
+### Tournées
+| Méthode | Route | Description |
+|--------|-------|-------------|
+| GET | /api/v1/tournees | Liste toutes les tournées |
+| GET | /api/v1/tournees/:id | Détail d'une tournée |
+| GET | /api/v1/tournees/:id/livraisons | Livraisons d'une tournée |
+| POST | /api/v1/tournees | Créer une tournée |
+| PUT | /api/v1/tournees/:id | Modifier une tournée |
+| DELETE | /api/v1/tournees/:id | Supprimer une tournée |
 
----
+### Livraisons
+| Méthode | Route | Description |
+|--------|-------|-------------|
+| GET | /api/v1/livraisons | Liste toutes les livraisons |
+| GET | /api/v1/livraisons/:id | Détail d'une livraison |
+| PATCH | /api/v1/livraisons/:id/statut | Mettre à jour le statut |
+| POST | /api/v1/livraisons | Créer une livraison |
+| PUT | /api/v1/livraisons/:id | Modifier une livraison |
+| DELETE | /api/v1/livraisons/:id | Supprimer une livraison |
 
-## Endpoints de l’API (v1)
+### Clients
+| Méthode | Route | Description |
+|--------|-------|-------------|
+| GET | /api/v1/clients | Liste tous les clients |
+| GET | /api/v1/clients/:id | Détail d'un client |
+| POST | /api/v1/clients | Créer un client |
+| PUT | /api/v1/clients/:id | Modifier un client |
+| DELETE | /api/v1/clients/:id | Supprimer un client |
 
-Base URL :
-/api/v1/users
+### Marchandises
+| Méthode | Route | Description |
+|--------|-------|-------------|
+| GET | /api/v1/marchandises | Liste toutes les marchandises |
+| GET | /api/v1/marchandises/:id | Détail d'une marchandise |
+| POST | /api/v1/marchandises | Créer une marchandise |
+| PUT | /api/v1/marchandises/:id | Modifier une marchandise |
+| DELETE | /api/v1/marchandises/:id | Supprimer une marchandise |
 
-- Méthode   Route                    Description
-- GET       /api/v1/users            Récupérer tous les users
-- GET       /api/v1/users/:id        Récupérer un user par ID
-- POST      /api/v1/users            Créer un user
-- PUT       /api/v1/users/:id        Modifier un user
-- DELETE    /api/v1/users/:id        Supprimer un user
+### Adresses
+| Méthode | Route | Description |
+|--------|-------|-------------|
+| GET | /api/v1/adresses | Liste toutes les adresses |
+| GET | /api/v1/adresses/:id | Détail d'une adresse |
+| POST | /api/v1/adresses | Créer une adresse |
+| PUT | /api/v1/adresses/:id | Modifier une adresse |
+| DELETE | /api/v1/adresses/:id | Supprimer une adresse |
 
----
+## Gestion des rôles
 
-## Exemple de requête POST
+| Rôle | Accès |
+|------|-------|
+| chauffeur | Ses tournées, mise à jour statut livraison |
+| client | Ses livraisons |
+| admin | Accès complet |
 
-{
-  "name": "David"
-}
+## Tests
 
----
+```bash
+npm test
+```
 
-## Technologies utilisées
+6 tests couvrant : register, login, mauvais password, accès sans token, accès avec token, statut invalide.
 
-- Node.js
-- Express
-- JavaScript
-- HTML / Fetch API
-- Git & GitHub
+## Architecture
 
----
-
-## Notes
-
-- Les données sont stockées en mémoire (pas de base de données)
-- Le projet respecte une séparation claire des responsabilités
-- Le versioning permet d’ajouter facilement une future /api/v2
+```
+api-mvc/
+  controllers/   Logique métier
+  models/        Accès base de données
+  routes/        Définition des routes + Swagger
+  middlewares/   auth, role, logger
+  config/        db.js, swagger.js
+  test/          Tests Jest + Supertest
+  app.js         Configuration Express
+  server.js      Lancement du serveur
+```

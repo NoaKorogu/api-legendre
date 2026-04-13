@@ -1,27 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const SellController = require('../controllers/sell.controller');
+const TourneeController = require('../controllers/tournee.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const logger = require('../middlewares/logger.middleware');
+const roleMiddleware = require('../middlewares/role.middleware');
 
 /**
  * @swagger
- * /api/v1/sells:
+ * /api/v1/tournees:
  *   get:
- *     summary: Récupérer tous les sells
+ *     summary: Récupérer tous les tournees
  *     tags:
- *       - Sells
+ *       - Tournees
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Liste des sells
+ *         description: Liste des tournees
  *       401:
  *         description: Non authentifié
  *   post:
- *     summary: Créer un nouveau sell
+ *     summary: Créer un nouveau tournee
  *     tags:
- *       - Sells
+ *       - Tournees
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -32,29 +33,29 @@ const logger = require('../middlewares/logger.middleware');
  *             type: object
 
  *             properties:
- *                            quantity:
- *                              type: integer
- *                              example: 1
- *                            product_id:
+ *                            date:
+ *                              type: string
+ *                              example: "2024-01-16"
+ *                            chauffeur_id:
  *                              type: integer
  *                              example: 1
  *             required:
- *               - quantity
- *               - product_id
+ *               - date
+ *               - chauffeur_id
  *     responses:
  *       201:
- *         description: Sell créé
+ *         description: Tournee créé
  */
-router.get('/', authMiddleware, logger, SellController.getAll);
-router.post('/', authMiddleware, logger, SellController.create);
+router.get('/', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, TourneeController.getAll);
+router.post('/', authMiddleware, logger, TourneeController.create);
 
 /**
  * @swagger
- * /api/v1/sells/{id}:
+ * /api/v1/tournees/{id}:
  *   get:
- *     summary: Récupérer un sell par ID
+ *     summary: Récupérer un tournee par ID
  *     tags:
- *       - Sells
+ *       - Tournees
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -65,13 +66,13 @@ router.post('/', authMiddleware, logger, SellController.create);
  *           type: integer
  *     responses:
  *       200:
- *         description: Sell trouvé
+ *         description: Tournee trouvé
  *       404:
  *         description: Non trouvé
  *   put:
- *     summary: Modifier un sell
+ *     summary: Modifier un tournee
  *     tags:
- *       - Sells
+ *       - Tournees
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -88,22 +89,22 @@ router.post('/', authMiddleware, logger, SellController.create);
  *             type: object
 
  *             properties:
- *                            quantity:
- *                              type: integer
- *                              example: 1
- *                            product_id:
+ *                            date:
+ *                              type: string
+ *                              example: "2024-01-16"
+ *                            chauffeur_id:
  *                              type: integer
  *                              example: 1
  *             required:
- *               - quantity
- *               - product_id
+ *               - date
+ *               - chauffeur_id
  *     responses:
  *       200:
- *         description: Sell modifié
+ *         description: Tournee modifié
  *   delete:
- *     summary: Supprimer un sell
+ *     summary: Supprimer un tournee
  *     tags:
- *       - Sells
+ *       - Tournees
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -114,10 +115,12 @@ router.post('/', authMiddleware, logger, SellController.create);
  *           type: integer
  *     responses:
  *       200:
- *         description: Sell supprimé
+ *         description: Tournee supprimé
  */
-router.get('/:id', authMiddleware, logger, SellController.getById);
-router.put('/:id', authMiddleware, logger, SellController.update);
-router.delete('/:id', authMiddleware, logger, SellController.delete);
+router.get('/:id', authMiddleware, logger, TourneeController.getById);
+router.put('/:id', authMiddleware, logger, TourneeController.update);
+router.delete('/:id', authMiddleware, logger, TourneeController.delete);
+
+router.get('/:id/livraisons', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, TourneeController.getLivraisons);
 
 module.exports = router;
