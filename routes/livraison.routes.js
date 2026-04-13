@@ -141,6 +141,37 @@ router.get('/:id', authMiddleware, roleMiddleware('chauffeur', 'admin', 'client'
 router.put('/:id', authMiddleware, roleMiddleware('admin'), logger, LivraisonController.update);
 router.delete('/:id', authMiddleware, roleMiddleware('admin'), logger, LivraisonController.delete);
 
+/**
+ * @swagger
+ * /api/v1/livraisons/{id}/statut:
+ *   patch:
+ *     summary: Mettre à jour le statut d'une livraison
+ *     tags:
+ *       - Livraisons
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               statut:
+ *                 type: string
+ *                 example: "livree"
+ *     responses:
+ *       200:
+ *         description: Statut mis à jour
+ *       404:
+ *         description: Livraison non trouvée
+ */
 router.patch('/:id/statut', authMiddleware, roleMiddleware('chauffeur', 'admin'), logger, LivraisonController.updateStatut);
 
 module.exports = router;
