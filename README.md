@@ -13,8 +13,8 @@ API REST sécurisée de gestion des tournées et livraisons pour l'entreprise de
 ## Installation
 
 ```bash
-git clone https://github.com/NoaKorogu/api-mvc
-cd api-mvc
+git clone https://github.com/NoaKorogu/api-legendre
+cd api-legendre
 npm install
 ```
 
