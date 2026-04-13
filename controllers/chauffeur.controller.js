@@ -56,6 +56,9 @@ exports.delete = async (req, res) => {
 
 exports.getTournees = async (req, res) => {
   try {
+    if (req.user?.role === 'chauffeur' && req.params.id != req.user.id) {
+      return res.status(403).json({ message: 'Accès refusé' });
+    }
     const connection = await require('../config/db').getConnection();
     const [rows] = await connection.query('SELECT * FROM tournees WHERE chauffeur_id = ?', [req.params.id]);
     connection.release();

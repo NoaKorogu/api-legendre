@@ -3,12 +3,16 @@ const pool = require('../config/db');
 exports.findAll = async (userId = null, userRole = null) => {
   const connection = await pool.getConnection();
   try {
-    let rows;
+    let query = 'SELECT * FROM livraisons';
+    let params = [];
     if (userRole === 'client') {
-      [rows] = await connection.query('SELECT * FROM livraisons WHERE client_id = ?', [userId]);
-    } else {
-      [rows] = await connection.query('SELECT * FROM livraisons');
+      query += ' WHERE client_id = ?';
+      params = [userId];
+    } else if (userRole === 'chauffeur') {
+      query = 'SELECT l.* FROM livraisons l JOIN tournees t ON l.tournee_id = t.id WHERE t.chauffeur_id = ?';
+      params = [userId];
     }
+    const [rows] = await connection.query(query, params);
     return rows;
   } finally {
     connection.release();

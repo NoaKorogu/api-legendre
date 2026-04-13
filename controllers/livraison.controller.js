@@ -15,6 +15,19 @@ exports.getById = async (req, res) => {
     if (!item) {
       return res.status(404).json({ message: 'livraison non trouvé' });
     }
+    // Check access
+    if (req.user?.role === 'client' && item.client_id !== req.user.id) {
+      return res.status(403).json({ message: 'Accès refusé' });
+    }
+    if (req.user?.role === 'chauffeur') {
+      // Check if the livraison's tournee belongs to the chauffeur
+      const connection = await require('../config/db').getConnection();
+      const [rows] = await connection.query('SELECT chauffeur_id FROM tournees WHERE id = ?', [item.tournee_id]);
+      connection.release();
+      if (rows.length === 0 || rows[0].chauffeur_id !== req.user.id) {
+        return res.status(403).json({ message: 'Accès refusé' });
+      }
+    }
     res.json(item);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });

@@ -2,7 +2,7 @@ const Tournee = require('../models/tournee.model');
 
 exports.getAll = async (req, res) => {
   try {
-    const items = await Tournee.findAll();
+    const items = await Tournee.findAll(req.user?.id, req.user?.role);
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
@@ -14,6 +14,10 @@ exports.getById = async (req, res) => {
     const item = await Tournee.findById(req.params.id);
     if (!item) {
       return res.status(404).json({ message: 'tournee non trouvé' });
+    }
+    // Check access
+    if (req.user?.role === 'chauffeur' && item.chauffeur_id !== req.user.id) {
+      return res.status(403).json({ message: 'Accès refusé' });
     }
     res.json(item);
   } catch (err) {

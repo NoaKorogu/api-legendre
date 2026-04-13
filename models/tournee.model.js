@@ -1,9 +1,15 @@
 const pool = require('../config/db');
 
-exports.findAll = async (userId = null) => {
+exports.findAll = async (userId = null, userRole = null) => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query('SELECT * FROM tournees');
+    let query = 'SELECT * FROM tournees';
+    let params = [];
+    if (userRole === 'chauffeur') {
+      query += ' WHERE chauffeur_id = ?';
+      params = [userId];
+    }
+    const [rows] = await connection.query(query, params);
     return rows;
   } finally {
     connection.release();

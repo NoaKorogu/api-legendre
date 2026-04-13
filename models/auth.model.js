@@ -31,11 +31,11 @@ exports.findByEmail = async (email) => {
   const connection = await pool.getConnection();
   try {
     // Cherche d'abord dans chauffeurs
-    const [chauffeurs] = await connection.query('SELECT *, "chauffeur" as role FROM chauffeurs WHERE email = ?', [email]);
+    const [chauffeurs] = await connection.query('SELECT id, nom, prenom, email, telephone, password, role FROM chauffeurs WHERE email = ?', [email]);
     if (chauffeurs.length > 0) return chauffeurs[0];
 
     // Sinon dans clients
-    const [clients] = await connection.query('SELECT *, "client" as role FROM clients WHERE email = ?', [email]);
+    const [clients] = await connection.query('SELECT id, nom, email, telephone, password, role FROM clients WHERE email = ?', [email]);
     if (clients.length > 0) return clients[0];
 
     return null;
