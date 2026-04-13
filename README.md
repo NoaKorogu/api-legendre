@@ -30,6 +30,8 @@ SECRET_KEY=une_cle_secrete_longue
 
 Importe le script SQL dans MySQL Workbench, puis lance :
 
+Le script SQL inclut un jeu de données par défaut avec des utilisateurs (ils ont tous pour mdp "SecurePassword123"), adresses, marchandises, tournées et livraisons pour faciliter les tests.
+
 ```bash
 npm run dev
 ```

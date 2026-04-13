@@ -33,7 +33,7 @@ const loginLimiter = rateLimit({
  *                 example: user@example.com
  *               password:
  *                 type: string
- *                 example: user123
+ *                 example: SecurePassword123
  *     responses:
  *       200:
  *         description: Authentification réussie
